@@ -1,0 +1,251 @@
+/* Global styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Aleta-Medium, sans-serif;
+    color: rgb(0, 0, 0);
+}
+
+@font-face {
+    font-family: Arial;
+    src: url(fonts/arial.ttf);
+}
+
+@font-face {
+    font-family: Cambria;
+    src: url(fonts/cambriab.ttf);
+}
+
+@font-face {
+    font-family: Georgia;
+    src: url(fonts/GARA.TTF);
+}
+
+/* Main container */
+.playlist #main {
+    height: 100%;
+    width: 100%;
+    background-color: #b1bb8f; /* 轻松的背景色 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.lyrics #main {
+    height: 85%;
+    width: 100%;
+    background-color: #e2fac3; /* 轻柔的背景色 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Keyframes for animation */
+@keyframes move {
+    0% {
+        background-position: 0 0;
+    }
+    100% {
+        background-position: 40px 40px;
+    }
+}
+
+/* Left side (poster) */
+#left {
+    height: 100%;
+    width: 45%;
+    background-color: #333;
+    border-radius: 20px; /* 圆角 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Right side (songs list) */
+#right {
+    height: 100%;
+    width: 55%;
+    padding: 0 3vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* 让内容靠上对齐 */
+    margin-top: 20px;
+}
+
+#right h3 {
+    font-size: 40px;
+    margin-bottom: 15px; /* 增加标题与内容的间距 */
+}
+
+#all-songs {
+    height: 85%;
+    margin-top: 10px; /* 缩小顶部间距 */
+    overflow-y: auto; /* 允许滚动 */
+    scrollbar-width: none; /* Firefox 隐藏滚动条 */
+    -ms-overflow-style: none; /* IE 隐藏滚动条 */
+}
+
+#all-songs::-webkit-scrollbar {
+    display: none; /* 隐藏 WebKit 浏览器中的滚动条 */
+}
+
+/* Song card */
+.song-card {
+    display: flex;
+    align-items: center; 
+    padding: 15px; 
+    border-top: 1px solid #5a5a5a;
+    transition: background-color 0.3s;
+}
+
+
+.song-card:nth-last-child(1) {
+    border-bottom: 1px solid #5a5a5a;
+    
+}
+
+.song-card:hover {
+    background-color: #5a5a5a;
+    border-radius: 10px;
+}
+
+.song-card img {
+    width: 180px; /* 根据需要调整大小 */
+    height: auto; /* 保持纵横比 */
+    margin-right: 20px; /* 图片和文本之间的间距 */
+}
+
+.song {
+    display: flex; /* 使用 flexbox 使内容横向排列 */
+    flex-direction: column; /* 垂直排列歌曲名和歌手名 */
+    justify-content: flex-start;  /* 垂直方向顶部对齐 */
+}
+
+.song-card h2, .song-card h3 {
+    margin: 0; /* 去掉默认边距 */
+    color: #000000; /* 设置颜色 */
+}
+
+.song-card h2 {
+    font-size: 25px; /* 增加字体大小 */
+    color: #000000; /* 设置标题颜色 */
+    
+}
+
+.song-card h3 {
+    margin-top: 5px; /* 调整间距 */
+    color: #000000; /* 设置歌手名颜色 */
+    
+}
+
+
+/* Player controls */
+#player {
+    height: 15%;
+    width: 100%;
+    background-color: rgb(0, 0, 0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 35px;
+}
+
+#controls button {
+    background-color: #7a7a7a; /* 按钮背景色 */
+    border: none; /* 去掉边框 */
+    color: white; /* 按钮字体颜色 */
+    padding: 10px 20px; /* 内边距 */
+    border-radius: 5px; /* 圆角 */
+    cursor: pointer; /* 鼠标悬停样式 */
+    transition: background-color 0.3s; /* 背景颜色变化 */
+}
+
+#controls button:hover {
+    background-color: #000000; /* 悬停时的背景色 */
+}
+
+/* Lyrics container */
+#lyrics-container {
+    height: 300px; /* 根据需要调整高度 */
+    overflow-y: auto; /* 允许垂直滚动 */
+    border: 1px solid #5a5a5a;
+    padding: 10px;
+    position: relative;
+    margin-top: 20px;
+}
+
+#lyrics {
+    width: 100%; /* 确保歌词宽度与容器相同 */
+    line-height: 30px; /* 根据需要设置行高 */
+}
+
+#lyrics div {
+    padding: 10px;
+    transition: background-color 0.3s;
+}
+
+#lyrics div.active {
+    background-color: rgba(255, 255, 255, 0.2); /* 高亮当前歌词 */
+}
+
+/* Progress bar styles */
+#progress-container {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+}
+
+#progress {
+    flex: 1;
+    height: 5px;
+    background-color: #5a5a5a;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#progress-bar {
+    height: 100%;
+    background-color: hsl(0, 4%, 85%); /* Progress bar color */
+    width: 0; /* Initial width */
+}
+
+/* Player heading */
+#player h3 {
+    background-color: rgb(108, 104, 104);
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+#player h3 i {
+    font-size: 30px;
+}
+
+#player h3:active {
+    scale: 0.93;
+}
+
+/* Media queries */
+@media only screen and (max-width: 768px) {
+    #main {
+        flex-direction: column;
+        padding: 5vw;
+    }
+
+    #left {
+        width: 100%;
+        height: auto;
+    }
+
+    #right {
+        width: 100%;
+        padding: 0;
+    }
+
+    #right h3 {
+        font-size: 30px;
+    }
+}

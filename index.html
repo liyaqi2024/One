@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Song List</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="playlist">
+    <div id="all-songs"></div>
+    <script src="script.js"></script> 
+
+    <script>
+        var songs = [
+            {
+                songName: 'Gone',
+                url: './songs/Gone.mp3',
+                img: './images/Gone.jpg',
+                artist: 'Rose', // 歌手名
+            },
+            {
+                songName: 'For You',
+                url: './songs/For You.mp3',
+                img: './images/For You.jpg',
+                artist: '严浩翔', // 歌手名
+            },
+            {
+                songName: 'Love Story',
+                url: './songs/Love Story.mp3',
+                img: './images/Love Story.jpg',
+                artist: 'Taylor Swift', // 歌手名
+            },
+            {
+                songName: 'Only Look At Me',
+                url: './songs/Only Look At Me.mp3',
+                img: './images/Only Look At Me.jpg',
+                artist: 'TAEYANG',
+            },
+            {
+                songName: 'Forever Young',
+                url: './songs/Forever Young.mp3',
+                img: './images/Forever Young.jpg',
+                artist: 'BLACKPINK',
+            },
+            // 添加更多歌曲
+
+
+
+            
+        ];
+
+        var allSongs = document.querySelector('#all-songs');
+
+        function playSong(index) {
+            var song = songs[index];
+            window.location.href = `song.html?name=${encodeURIComponent(song.songName)}&url=${encodeURIComponent(song.url)}&img=${encodeURIComponent(song.img)}&artist=${encodeURIComponent(song.artist)}`;
+        }
+        function addSongs() {
+            var songCards = songs.map(function (song, index) {
+                return `
+                    <div class="song-card" id="${index}" onclick="playSong(${index})">
+                        <div class="song">
+                            <img src="${song.img}" alt="" />
+                            <h2>${song.songName}</h2>
+                            <h3>${song.artist}</h3> <!-- 添加歌手名字 -->
+                        </div>
+                    </div>
+                `;
+            });
+
+            allSongs.innerHTML = songCards.join('');
+        }
+
+        
+        function playSong(index) {
+            var song = songs[index];
+            window.location.href = `song.html?name=${encodeURIComponent(song.songName)}&url=${encodeURIComponent(song.url)}&img=${encodeURIComponent(song.img)}&artist=${encodeURIComponent(song.artist)}&index=${index}`;
+        }
+
+        addSongs();
+    </script>
+</body>
+</html>

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Song Player</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Styles for player */
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            height: 100vh;
+            margin: 0;
+        }
+        #header {
+            text-align: center;
+            margin-top: 20px;
+        }
+        #lyrics {
+            height: 300px; 
+            overflow-y: auto; 
+            margin-top: 20px;
+            border: 1px solid #5a5a5a;
+            padding: 10px;
+            position: relative;
+            flex: 1;
+        }
+        .active {
+            color: #ffcc00; 
+            font-weight: bold;
+            font-size: 1.1em; 
+        }
+        #controls {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        #progress-container {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            width: 100%;
+        }
+        #progress {
+            flex: 1;
+            height: 5px;
+            background-color: #5a5a5a;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #progress-bar {
+            height: 100%;
+            background-color: #ffcc00; 
+            width: 0; 
+        }
+        #song-img {
+            width: 200px;
+            height: auto;
+        }
+    </style>
+</head>
+<body class="lyrics">
+
+    <div id="header">
+        <img id="song-img" src="" alt="Song Cover">
+        <h2 id="song-name"></h2>
+        <h3 id="artist-name"></h3>
+    </div>
+    
+    <div id="lyrics"></div>
+
+    <div id="controls">
+        <button id="backward">Previous</button>
+        <button id="play">Play/Pause</button>
+        <button id="forward">Next</button>
+    </div>
+
+    <div id="progress-container">
+        <div id="progress" onclick="setProgress(event)">
+            <div id="progress-bar"></div>
+        </div>
+    </div>
+
+    <audio id="audio" controls>
+        <source id="audio-src" src="" type="audio/mp3">
+    </audio>
+
+    <script>
+        var songs = [
+            {
+                songName: 'Gone',
+                url: './songs/Gone.mp3',
+                img: './images/Gone.jpg',
+                artist: 'Rose',
+            },
+            {
+                songName: 'For You',
+                url: './songs/For You.mp3',
+                img: './images/For You.jpg',
+                artist: '严浩翔',
+            },
+            {
+                songName: 'Love Story',
+                url: './songs/Love Story.mp3',
+                img: './images/Love Story.jpg',
+                artist: 'Taylor Swift',
+            },
+            {
+                songName: 'Only Look At Me',
+                url: './songs/Only Look At Me.mp3',
+                img: './images/Only Look At Me.jpg',
+                artist: 'TAEYANG',
+            },
+            {
+                songName: 'Forever Young',
+                url: './songs/Forever Young.mp3',
+                img: './images/Forever Young.jpg',
+                artist: 'BLACKPINK',
+            },
+            // 添加更多歌曲
+        ];
+
+        let currentSongIndex=0; // 在这里定义 currentSongIndex
+
+
+        function updateSongDetails() {
+            const song = songs[currentSongIndex]; // 根据索引获取歌曲信息
+            console.log(`Playing song: ${song.songName}, Index: ${currentSongIndex}`); // 调试输出
+
+            // 直接使用 songs 数组中的数据
+            document.getElementById('song-name').innerText = song.songName;
+            document.getElementById('artist-name').innerText = song.artist; 
+            document.getElementById('audio-src').src = song.url;
+            document.getElementById('song-img').src = song.img;
+
+            const audio = document.getElementById('audio');
+            audio.src = song.url; // 设置新的音频源
+            audio.load(); // 加载新音频
+
+            audio.pause(); // 暂停当前音频（如果在播放中）
+            audio.currentTime = 0; // 重置播放时间到开始
+            audio.play(); // 播放新音频
+
+            lyrics = []; 
+
+            fetch(`./lyrics/${encodeURIComponent(song.songName)}.lrc`) 
+                .then(response => response.text())
+                .then(data => {
+                    console.log(data); // 查看获取的歌词内容
+                    parseLyrics(data);
+                    displayLyrics();
+                    audio.addEventListener('timeupdate', updateLyrics);
+                    audio.addEventListener('timeupdate', updateProgress);
+                });
+        }
+
+
+
+
+        let lyrics = [];
+        
+        function parseLyrics(data) {
+            const lines = data.split('\n');
+            for (let line of lines) {
+                const match = line.match(/\[(\d+):(\d+\.\d+)\](.*)/);
+                if (match) {
+                    const minutes = parseInt(match[1]);
+                    const seconds = parseFloat(match[2]);
+                    const lyricText = match[3].trim();
+                    const time = minutes * 60 + seconds;
+                    lyrics.push({ time, text: lyricText });
+                }
+            }
+        }
+
+        function displayLyrics() {
+            const lyricsContainer = document.getElementById('lyrics');
+            lyricsContainer.innerHTML = ''; // 清空之前的歌词
+
+            lyrics.forEach(lyric => {
+                const lyricElement = document.createElement('div');
+                lyricElement.innerText = lyric.text;
+                lyricsContainer.appendChild(lyricElement);
+            });
+        }
+
+        function updateLyrics() {
+            const currentTime = audio.currentTime;
+            const lyricsContainer = document.getElementById('lyrics');
+
+            for (let i = 0; i < lyricsContainer.children.length; i++) {
+                lyricsContainer.children[i].classList.remove('active');
+            }
+
+            for (let i = 0; i < lyrics.length; i++) {
+                if (currentTime < lyrics[i].time) {
+                    const previousLyric = lyricsContainer.children[i - 1];
+                    if (previousLyric) {
+                        previousLyric.classList.add('active');
+                        previousLyric.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                    break;
+                }
+            }
+        }
+
+        function updateProgress() {
+            const progressBar = document.getElementById('progress-bar');
+            const progress = (audio.currentTime / audio.duration) * 100;
+            progressBar.style.width = progress + '%';
+        }
+
+        function setProgress(event) {
+            const progress = document.getElementById('progress');
+            const clickX = event.offsetX;
+            const width = progress.clientWidth;
+            const duration = audio.duration;
+            audio.currentTime = (clickX / width) * duration;
+        }
+
+        document.getElementById('play').addEventListener('click', () => {
+            if (audio.paused) {
+                audio.play();
+                document.getElementById('play').innerText = 'Pause';
+            } else {
+                audio.pause();
+                document.getElementById('play').innerText = 'Play';
+            }
+        });
+
+        document.getElementById('backward').addEventListener('click', () => {
+            if (currentSongIndex > 0) {
+                currentSongIndex--;
+            } else {
+                currentSongIndex = songs.length - 1;
+            }
+            updateSongDetails(); 
+        });
+
+        document.getElementById('forward').addEventListener('click', () => {
+            if (currentSongIndex < songs.length - 1) {
+                currentSongIndex++;
+            } else {
+                currentSongIndex = 0;
+            }
+            updateSongDetails(); 
+        });
+
+        // 页面加载时调用 updateSongDetails
+         updateSongDetails();
+    </script>
+</body>
+</html>
